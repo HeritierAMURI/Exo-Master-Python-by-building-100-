@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-heading mb-4 mb-lg-5">
+    <p class="eyebrow mb-2">Votre prochain coin de travail</p>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+        <div>
+            <h1 class="display-6 fw-bold mb-2">Trouvez votre café idéal</h1>
+            <p class="text-secondary mb-0">Des adresses confortables pour travailler autour d’un bon café.</p>
+        </div>
+        <a class="btn btn-accent" href="{{ url_for('add_cafe') }}">
+            <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Ajouter un café
+        </a>
+    </div>
+</section>
+
+<section class="filter-panel p-3 p-md-4 mb-4" aria-labelledby="filterHeading">
+    <h2 class="h5 mb-3" id="filterHeading">Filtrer les cafés</h2>
+    <form action="{{ url_for('home') }}" method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-md-6">
+            {{ filters.location.label(class="form-label") }}
+            {{ filters.location(class="form-control", placeholder="Ex. Goma, Paris 1er", type="search") }}
+        </div>
+        <div class="col-12 col-md-4">
+            {{ filters.wifi.label(class="form-label") }}
+            {{ filters.wifi(class="form-select") }}
+        </div>
+        <div class="col-12 col-md-2 d-grid">
+            <button class="btn btn-accent" type="submit">
+                <i class="bi bi-funnel me-1" aria-hidden="true"></i>Filtrer
+            </button>
+        </div>
+    </form>
+</section>
+
+<section aria-labelledby="cafesHeading">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 mb-0" id="cafesHeading">Cafés à découvrir</h2>
+        <span class="text-secondary small">{{ cafes|length }} résultat{{ "s" if cafes|length != 1 }}</span>
+    </div>
+    {% if cafes %}
+        {% include "_cafe_cards.html" %}
+    {% else %}
+        <div class="empty-state text-center p-5">
+            <i class="bi bi-cup-hot display-5" aria-hidden="true"></i>
+            <h3 class="h5 mt-3">Aucun café ne correspond à ces filtres</h3>
+            <p class="text-secondary mb-3">Essayez une autre ville ou modifiez le filtre Wi-Fi.</p>
+            <a class="btn btn-outline-primary" href="{{ url_for('home') }}">Effacer les filtres</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

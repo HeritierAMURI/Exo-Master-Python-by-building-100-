@@ -1,0 +1,54 @@
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for cafe in cafes %}
+        <div class="col">
+            <article class="card cafe-card h-100">
+                <img class="card-img-top cafe-image" src="{{ cafe.img_url }}"
+                     alt="Photo de {{ cafe.name }}" loading="lazy">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                        <h2 class="h5 card-title mb-1">{{ cafe.name }}</h2>
+                        {% if cafe.has_wifi %}
+                            <span class="badge wifi-badge"><i class="bi bi-wifi me-1" aria-hidden="true"></i>Wi-Fi</span>
+                        {% else %}
+                            <span class="badge text-bg-light">Sans Wi-Fi</span>
+                        {% endif %}
+                    </div>
+                    <p class="cafe-location mt-2 mb-3">
+                        <i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>{{ cafe.location }}
+                    </p>
+
+                    <ul class="cafe-features list-unstyled mb-3">
+                        <li><i class="bi {{ 'bi-check-circle-fill' if cafe.has_sockets else 'bi-x-circle' }}" aria-hidden="true"></i>
+                            Prises {{ "disponibles" if cafe.has_sockets else "indisponibles" }}</li>
+                        <li><i class="bi {{ 'bi-check-circle-fill' if cafe.has_toilet else 'bi-x-circle' }}" aria-hidden="true"></i>
+                            Toilettes {{ "disponibles" if cafe.has_toilet else "indisponibles" }}</li>
+                        <li><i class="bi {{ 'bi-check-circle-fill' if cafe.can_take_calls else 'bi-x-circle' }}" aria-hidden="true"></i>
+                            Appels {{ "autorisés" if cafe.can_take_calls else "non autorisés" }}</li>
+                    </ul>
+
+                    <p class="cafe-price mb-3">
+                        <i class="bi bi-cup-hot me-1" aria-hidden="true"></i>
+                        Café : {{ cafe.coffee_price or "Prix non renseigné" }}
+                        <span class="text-muted"> · {{ cafe.seats }} places</span>
+                    </p>
+
+                    <div class="card-actions d-flex flex-wrap gap-2 mt-auto">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ cafe.map_url }}"
+                           target="_blank" rel="noopener noreferrer">
+                            <i class="bi bi-map me-1" aria-hidden="true"></i>Itinéraire
+                        </a>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{{ url_for('update_price', cafe_id=cafe.id) }}">Modifier le prix</a>
+                        <form action="{{ url_for('delete_cafe', cafe_id=cafe.id) }}" method="post"
+                              onsubmit="return confirm('Supprimer ce café ?');">
+                            {{ delete_form.hidden_tag() }}
+                            <button class="btn btn-outline-danger btn-sm" type="submit">
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+    {% endfor %}
+</div>

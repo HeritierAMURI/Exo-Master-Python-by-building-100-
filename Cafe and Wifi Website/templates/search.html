@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-heading mb-4">
+    <p class="eyebrow mb-2">Recherche</p>
+    <h1 class="display-6 fw-bold mb-2">
+        {% if location %}Résultats pour « {{ location }} »{% else %}Rechercher un café{% endif %}
+    </h1>
+    {% if location %}
+        <p class="text-secondary mb-0">{{ cafes|length }} résultat{{ "s" if cafes|length != 1 }}</p>
+    {% else %}
+        <p class="text-secondary mb-0">Saisissez un nom de café ou un quartier dans la barre de recherche.</p>
+    {% endif %}
+</header>
+
+{% if cafes %}
+    {% include "_cafe_cards.html" %}
+{% elif location %}
+    <div class="empty-state text-center p-5">
+        <i class="bi bi-search display-5" aria-hidden="true"></i>
+        <h2 class="h5 mt-3">Aucun café trouvé</h2>
+        <p class="text-secondary">Essayez un autre nom ou quartier.</p>
+        <a class="btn btn-outline-primary" href="{{ url_for('home') }}">Voir tous les cafés</a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,203 @@
+:root {
+    --accent: #d1941a;
+    --accent-light: #e0b045;
+    --ink: #29251f;
+    --muted: #716b61;
+    --surface: #ffffff;
+    --page: #f7f5f0;
+    --border: #e9e3d8;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--page);
+    color: var(--ink);
+}
+
+main {
+    flex: 1;
+}
+
+a {
+    color: var(--accent);
+    text-underline-offset: 0.18em;
+}
+
+a:hover,
+a:focus-visible {
+    color: var(--accent-light);
+}
+
+.site-navbar {
+    background: var(--ink);
+    box-shadow: 0 2px 12px rgb(41 37 31 / 12%);
+}
+
+.navbar-brand,
+.navbar-brand:hover,
+.navbar-brand:focus {
+    color: var(--accent-light);
+}
+
+.navbar .nav-link {
+    color: rgb(255 255 255 / 82%);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+    color: var(--accent-light);
+}
+
+.search-form {
+    max-width: 22rem;
+}
+
+.search-form .form-control {
+    min-width: 0;
+}
+
+.btn-accent,
+.btn-primary {
+    --bs-btn-color: var(--ink);
+    --bs-btn-bg: var(--accent);
+    --bs-btn-border-color: var(--accent);
+    --bs-btn-hover-color: var(--ink);
+    --bs-btn-hover-bg: var(--accent-light);
+    --bs-btn-hover-border-color: var(--accent-light);
+    --bs-btn-active-color: var(--ink);
+    --bs-btn-active-bg: var(--accent-light);
+    --bs-btn-active-border-color: var(--accent-light);
+    --bs-btn-disabled-color: var(--ink);
+    --bs-btn-disabled-bg: var(--accent);
+    --bs-btn-disabled-border-color: var(--accent);
+    font-weight: 600;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #76500b;
+    --bs-btn-border-color: var(--accent);
+    --bs-btn-hover-color: var(--ink);
+    --bs-btn-hover-bg: var(--accent-light);
+    --bs-btn-hover-border-color: var(--accent-light);
+    --bs-btn-active-color: var(--ink);
+    --bs-btn-active-bg: var(--accent-light);
+    --bs-btn-active-border-color: var(--accent-light);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgb(209 148 26 / 22%);
+}
+
+.page-heading h1,
+.filter-panel h2,
+.card-title {
+    color: var(--ink);
+}
+
+.eyebrow {
+    color: #76500b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.filter-panel,
+.empty-state {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+}
+
+.filter-panel {
+    box-shadow: 0 0.5rem 1.5rem rgb(41 37 31 / 4%);
+}
+
+.cafe-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: 0 0.4rem 1.3rem rgb(41 37 31 / 5%);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.cafe-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-light);
+    box-shadow: 0 0.8rem 1.8rem rgb(41 37 31 / 12%);
+}
+
+.cafe-image {
+    height: 12.5rem;
+    object-fit: cover;
+    background: #ece7de;
+}
+
+.cafe-location,
+.cafe-price {
+    color: var(--muted);
+}
+
+.cafe-location i,
+.cafe-price i,
+.cafe-features i.bi-check-circle-fill,
+.empty-state > i {
+    color: var(--accent);
+}
+
+.cafe-features {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.cafe-features i {
+    width: 1.2rem;
+    margin-right: 0.25rem;
+}
+
+.wifi-badge {
+    background: var(--accent-light);
+    color: var(--ink);
+}
+
+.card-actions form {
+    display: inline-flex;
+}
+
+.site-footer {
+    color: #ded8ce;
+    background: var(--ink);
+}
+
+@media (max-width: 575.98px) {
+    .search-form {
+        max-width: none;
+    }
+
+    .card-actions > * {
+        flex: 1 1 auto;
+    }
+
+    .card-actions .btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
