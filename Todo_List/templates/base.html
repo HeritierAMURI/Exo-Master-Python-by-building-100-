@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f6f3">
+    <title>{% block title %}Atelier — Gestion des tâches{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar app-navbar">
+      <div class="container-fluid app-container">
+        <a class="navbar-brand brand" href="{{ url_for('index') }}">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span>atelier<span class="brand-period">.</span></span>
+        </a>
+        <span class="navbar-note d-none d-sm-inline">Espace de travail personnel</span>
+      </div>
+    </nav>
+
+    <main class="container-fluid app-container page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack" aria-live="polite">
+            {% for category, message in messages %}
+              <div class="alert flash-alert flash-{{ category }}" role="status">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

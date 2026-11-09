@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord — Atelier{% endblock %}
+
+{% block content %}
+  <header class="board-header">
+    <div>
+      <p class="eyebrow">VOTRE ESPACE DE TRAVAIL</p>
+      <h1>Faites avancer vos idées<span class="title-period">.</span></h1>
+      <p class="page-subtitle">Un espace clair pour organiser ce qui compte.</p>
+    </div>
+    <a class="btn btn-accent add-task-link" href="#new-task">
+      <span aria-hidden="true">＋</span> Nouvelle tâche
+    </a>
+  </header>
+
+  {% if edit_task %}
+    <section class="form-panel edit-panel" id="edit-task" aria-labelledby="edit-heading">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">MODIFICATION</p>
+          <h2 id="edit-heading">Modifier la tâche</h2>
+        </div>
+        <a class="icon-link" href="{{ url_for('index') }}" aria-label="Annuler la modification">×</a>
+      </div>
+      <form method="post" action="{{ url_for('edit_task', task_id=edit_task.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="row g-3">
+          <div class="col-lg-5">
+            <label class="form-label" for="edit-title">Titre</label>
+            <input class="form-control" id="edit-title" name="title" maxlength="120" required value="{{ edit_task.title }}">
+          </div>
+          <div class="col-lg-4">
+            <label class="form-label" for="edit-description">Description <span class="optional-label">· facultative</span></label>
+            <input class="form-control" id="edit-description" name="description" maxlength="1000" value="{{ edit_task.description or '' }}">
+          </div>
+          <div class="col-lg-3">
+            <label class="form-label" for="edit-status">Statut</label>
+            <select class="form-select" id="edit-status" name="status" required>
+              {% for status in statuses %}
+                <option value="{{ status }}" {% if edit_task.status == status %}selected{% endif %}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <a class="btn btn-quiet" href="{{ url_for('index') }}">Annuler</a>
+          <button class="btn btn-accent" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </section>
+  {% endif %}
+
+  <section class="board" aria-label="Tableau Kanban">
+    {% for status in statuses %}
+      {% set column_tasks = tasks_by_status[status] %}
+      {% set column_number = loop.index %}
+      <section class="board-column" aria-labelledby="column-{{ loop.index }}">
+        <div class="column-header">
+          <div class="column-title-wrap">
+            <span class="column-dot dot-{{ loop.index }}" aria-hidden="true"></span>
+            <h2 class="column-title" id="column-{{ loop.index }}">{{ status }}</h2>
+            <span class="task-count">{{ column_tasks|length }}</span>
+          </div>
+          <span class="column-menu-mark" aria-hidden="true">•••</span>
+        </div>
+
+        <div class="task-list">
+          {% for task in column_tasks %}
+            <article class="task-card {% if task.status == 'Terminé' %}task-complete{% endif %}">
+              <div class="task-card-top">
+                <span class="task-tag tag-{{ column_number }}">{{ status }}</span>
+                <time class="task-date" datetime="{{ task.created_at.isoformat() }}">{{ task.created_at.strftime("%d/%m/%Y") }}</time>
+              </div>
+              <h3 class="task-title">{{ task.title }}</h3>
+              {% if task.description %}
+                <p class="task-description">{{ task.description }}</p>
+              {% endif %}
+
+              <div class="task-actions">
+                <form method="post" action="{{ url_for('toggle_complete', task_id=task.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="task-action {% if task.status == 'Terminé' %}action-checked{% endif %}" type="submit" aria-label="{% if task.status == 'Terminé' %}Rouvrir{% else %}Marquer comme terminée{% endif %} : {{ task.title }}">
+                    <span class="check-icon" aria-hidden="true">{% if task.status == 'Terminé' %}✓{% else %}○{% endif %}</span>
+                    <span>{% if task.status == 'Terminé' %}Terminé{% else %}Terminer{% endif %}</span>
+                  </button>
+                </form>
+                {% if task.status != 'Terminé' %}
+                  <form method="post" action="{{ url_for('advance_task', task_id=task.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="task-action advance-action" type="submit" aria-label="Faire avancer : {{ task.title }}">Avancer <span aria-hidden="true">→</span></button>
+                  </form>
+                {% endif %}
+                <a class="task-action edit-action" href="{{ url_for('edit_task', task_id=task.id) }}" aria-label="Modifier : {{ task.title }}">Modifier</a>
+                <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirm('Supprimer définitivement cette tâche ?');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="task-action delete-action" type="submit" aria-label="Supprimer : {{ task.title }}">Supprimer</button>
+                </form>
+              </div>
+            </article>
+          {% else %}
+            <div class="empty-column">
+              <span class="empty-icon" aria-hidden="true">✳</span>
+              <p>Aucune tâche ici pour le moment.</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if loop.first %}
+          <a class="column-add-link" href="#new-task"><span aria-hidden="true">＋</span> Ajouter une tâche</a>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </section>
+
+  <section class="form-panel create-panel" id="new-task" aria-labelledby="create-heading">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">UNE NOUVELLE IDÉE ?</p>
+        <h2 id="create-heading">Ajouter une tâche</h2>
+      </div>
+      <span class="panel-spark" aria-hidden="true">✳</span>
+    </div>
+    <form method="post" action="{{ url_for('create_task') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-5">
+          <label class="form-label" for="title">Titre</label>
+          <input class="form-control" id="title" name="title" maxlength="120" placeholder="Sur quoi voulez-vous avancer ?" required>
+        </div>
+        <div class="col-lg-4">
+          <label class="form-label" for="description">Description <span class="optional-label">· facultative</span></label>
+          <input class="form-control" id="description" name="description" maxlength="1000" placeholder="Ajoutez quelques détails…">
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label" for="status">Statut initial</label>
+          <select class="form-select" id="status" name="status">
+            {% for status in statuses %}
+              <option value="{{ status }}" {% if status == 'À faire' %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-lg-1 d-grid">
+          <button class="btn btn-accent submit-task" type="submit" aria-label="Ajouter la tâche">＋</button>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
